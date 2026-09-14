@@ -297,6 +297,71 @@
     el('accred').innerHTML = bi(D.settings.notes.accreditation);
   }
 
+  function certificatePreviewUrl(url) {
+    var value = String(url || '');
+    var drive = value.match(/^https:\/\/drive\.google\.com\/file\/d\/([^/]+)\//);
+    if (drive) return 'https://drive.google.com/file/d/' + encodeURIComponent(drive[1]) + '/preview';
+    return /\.pdf(?:$|[?#])/i.test(value) ? value : '';
+  }
+
+  function initCertificatePreviews() {
+    var desktopHover = window.matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine)');
+    if (!desktopHover.matches) return;
+
+    var links = document.querySelectorAll('.cert-link');
+    if (!links.length) return;
+
+    var preview = document.createElement('div');
+    preview.className = 'cert-preview';
+    preview.setAttribute('aria-hidden', 'true');
+    preview.innerHTML = '<div class="cert-preview-bar"><span class="en">Certificate preview</span><span class="ar">معاينة الشهادة</span></div>' +
+      '<iframe title="Certificate preview" loading="eager"></iframe>';
+    document.body.appendChild(preview);
+
+    var frame = preview.querySelector('iframe');
+    var timer = 0;
+
+    function place(link) {
+      var rect = link.closest('.cert').getBoundingClientRect();
+      var width = Math.min(390, window.innerWidth - 32);
+      var height = Math.round(width * 0.76);
+      var gap = 18;
+      var left = rect.right + gap;
+      if (left + width > window.innerWidth - 16) left = rect.left - width - gap;
+      left = Math.max(16, Math.min(left, window.innerWidth - width - 16));
+      var top = Math.max(16, Math.min(rect.top + (rect.height - height) / 2, window.innerHeight - height - 16));
+      preview.style.left = left + 'px';
+      preview.style.top = top + 'px';
+    }
+
+    function hide() {
+      window.clearTimeout(timer);
+      preview.classList.remove('is-visible');
+      preview.setAttribute('aria-hidden', 'true');
+      frame.removeAttribute('src');
+    }
+
+    links.forEach(function (link) {
+      var url = certificatePreviewUrl(link.href);
+      if (!url) return;
+      link.classList.add('has-preview');
+      link.addEventListener('pointerenter', function () {
+        window.clearTimeout(timer);
+        place(link);
+        timer = window.setTimeout(function () {
+          frame.src = url;
+          preview.classList.add('is-visible');
+          preview.setAttribute('aria-hidden', 'false');
+        }, 180);
+      });
+      link.addEventListener('pointerleave', hide);
+      link.addEventListener('blur', hide);
+    });
+
+    window.addEventListener('scroll', hide, { passive: true });
+    window.addEventListener('resize', hide);
+  }
+
   function renderEducation() {
     el('eduList').innerHTML = visible(D.education.items).map(function (e) {
       return '<div class="edu-card"><h3>' + bi(e.program) + '</h3>' +
@@ -453,7 +518,7 @@
     D = data;
     renderBindings(); renderNav(); renderHero(); renderAchievements();
     renderExperience(); renderProjects(); renderTraining();
-    renderSkills(); renderCerts(); renderEducation(); renderContact(); jsonld();
+    renderSkills(); renderCerts(); initCertificatePreviews(); renderEducation(); renderContact(); jsonld();
     var initialLang = D.settings.site.defaultLang || 'en';
     try {
       var savedLang = localStorage.getItem('aa_lang');
