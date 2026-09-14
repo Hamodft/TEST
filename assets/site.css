@@ -472,3 +472,23 @@ html[dir="rtl"] .drawer{transform:translateX(-102%)}
 .profile-photo-stage { background-position: center bottom; }
 
 .profile-photo-stage { background-position: center bottom !important; }
+
+/* Desktop-only certificate hover preview. Touch and mobile layouts are unchanged. */
+.cert-preview{display:none}
+@media (min-width:900px) and (hover:hover) and (pointer:fine){
+  .cert-link.has-preview{cursor:zoom-in}
+  .cert-preview{
+    position:fixed;display:block;z-index:420;width:min(390px,calc(100vw - 32px));
+    aspect-ratio:1.315/1;overflow:hidden;border:1px solid rgba(213,170,90,.55);
+    border-radius:14px;background:#fff;box-shadow:0 28px 75px rgba(8,19,31,.28);
+    opacity:0;visibility:hidden;transform:translateY(8px) scale(.985);
+    transition:opacity .16s ease,transform .16s ease,visibility .16s;pointer-events:none
+  }
+  .cert-preview.is-visible{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
+  .cert-preview-bar{
+    height:34px;display:flex;align-items:center;padding:0 12px;background:#0d1d2d;
+    color:#f0d89e;font-family:var(--body);font-size:.72rem;font-weight:600;
+    letter-spacing:.02em
+  }
+  .cert-preview iframe{display:block;width:100%;height:calc(100% - 34px);border:0;background:#f4f1eb}
+}
