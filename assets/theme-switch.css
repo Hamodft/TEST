@@ -272,35 +272,23 @@ html[data-portfolio-theme="new"] .profile-photo-stage {
   margin: 0 auto;
   aspect-ratio: .82 !important;
   max-height: 67svh;
-  border: 0 !important;
+  border: 1px solid rgba(240, 216, 158, .38) !important;
   border-radius: 250px 250px 46px 46px !important;
-  background-color: transparent !important;
+  background-color: #10263b !important;
   background-size: contain !important;
   background-position: center bottom !important;
-  box-shadow: none !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), 0 30px 90px rgba(0, 0, 0, .32) !important;
   filter: drop-shadow(0 35px 42px rgba(0, 0, 0, .42));
   isolation: isolate;
 }
 
 html[data-portfolio-theme="new"] .profile-photo-stage::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  left: 5%;
-  right: 5%;
-  bottom: 0;
-  height: 87%;
-  border-radius: 230px 230px 42px 42px;
-  background:
-    linear-gradient(155deg, rgba(240, 216, 158, .24), rgba(255, 255, 255, .025) 44%),
-    linear-gradient(145deg, #15304a, #091725);
-  border: 1px solid rgba(240, 216, 158, .35);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), 0 30px 90px rgba(0, 0, 0, .32);
+  display: none;
 }
 
 html[data-portfolio-theme="new"] .profile-photo-stage:hover {
   filter: drop-shadow(0 42px 58px rgba(0, 0, 0, .52)) saturate(1.04) brightness(1.025);
-  box-shadow: none !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), 0 38px 100px rgba(0, 0, 0, .42) !important;
 }
 
 html[data-portfolio-theme="new"] .aside-card .facts {
